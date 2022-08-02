@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 void main() {
@@ -27,9 +29,26 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  //tween is the short of inbetween
-  final Tween<double> _scaleTween = Tween<double>(begin: 1, end: 15);
+class _MyHomePageState extends State<MyHomePage>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 2),
+    );
+    _controller.addListener(() {}); //can do something meanwhile is changing
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   double? _scale = 2;
 
@@ -46,24 +65,26 @@ class _MyHomePageState extends State<MyHomePage> {
           onPressed: () {
             setState(() {
               if (_scale != 2) {
+                // _controller.forward();
+                _controller.repeat();
                 _scale = 2;
                 _color = const Color.fromARGB(255, 112, 228, 29);
               } else {
+                _controller.stop();
                 _scale = 1;
                 _color = const Color.fromARGB(255, 58, 29, 174);
               }
             });
           },
           //here! remember this
-          child: TweenAnimationBuilder(
-            tween: _scaleTween,
-            duration: const Duration(seconds: 2),
-            builder: ((context, scale, child) {
-              return Transform.scale(
-                scale: _scale,
+          child: AnimatedBuilder(
+            animation: _controller.view,
+            builder: (context, child) {
+              return Transform.rotate(
+                angle: _controller.value * 2 * pi,
                 child: child,
               );
-            }),
+            },
             child: Container(
               width: 200,
               height: 200,
