@@ -53,6 +53,7 @@ class _MyHomePageState extends State<MyHomePage> {
               }
             });
           },
+          //here! remember this
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 1000),
             width: _width,
