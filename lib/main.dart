@@ -28,8 +28,11 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  double _width = 200;
-  double _height = 200;
+  //tween is the short of inbetween
+  final Tween<double> _scaleTween = Tween<double>(begin: 1, end: 15);
+
+  double? _scale = 2;
+
   Color? _color = Colors.blue[300];
 
   @override
@@ -42,28 +45,34 @@ class _MyHomePageState extends State<MyHomePage> {
         child: MaterialButton(
           onPressed: () {
             setState(() {
-              if (_width != 400) {
-                _width = 400;
-                _height = 400;
+              if (_scale != 2) {
+                _scale = 2;
                 _color = const Color.fromARGB(255, 112, 228, 29);
               } else {
-                _width = 200;
-                _height = 200;
+                _scale = 1;
                 _color = const Color.fromARGB(255, 58, 29, 174);
               }
             });
           },
           //here! remember this
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 1000),
-            width: _width,
-            height: _height,
-            color: _color,
-            curve: Curves.bounceOut,
-            child: const Center(
-              child: Text(
-                'Animation',
-                style: TextStyle(fontSize: 30),
+          child: TweenAnimationBuilder(
+            tween: _scaleTween,
+            duration: const Duration(seconds: 2),
+            builder: ((context, scale, child) {
+              return Transform.scale(
+                scale: _scale,
+                child: child,
+              );
+            }),
+            child: Container(
+              width: 200,
+              height: 200,
+              color: _color,
+              child: const Center(
+                child: Text(
+                  'Animation',
+                  style: TextStyle(fontSize: 30),
+                ),
               ),
             ),
           ),
